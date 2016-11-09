@@ -13,23 +13,23 @@ class Cell: LLSwipeCell {
         super.awakeFromNib()
         
         let button1 = UIButton()
-        button1.setTitle("1", forState: .Normal)
+        button1.setTitle("1", for: .normal)
         button1.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button1.backgroundColor = UIColor.redColor()
+        button1.backgroundColor = .red
         let button2 = UIButton()
-        button2.setTitle("2", forState: .Normal)
+        button2.setTitle("2", for: .normal)
         button2.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button2.backgroundColor = UIColor.greenColor()
+        button2.backgroundColor = .green
         leftButtons = [button1, button2]
         
         let button3 = UIButton()
-        button3.setTitle("3", forState: .Normal)
+        button3.setTitle("3", for: .normal)
         button3.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button3.backgroundColor = UIColor.cyanColor()
+        button3.backgroundColor = .cyan
         let button4 = UIButton()
-        button4.setTitle("4", forState: .Normal)
+        button4.setTitle("4", for: .normal)
         button4.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button4.backgroundColor = UIColor.blueColor()
+        button4.backgroundColor = .blue
         rightButtons = [button3, button4]
     }
 }
@@ -39,13 +39,13 @@ class OdeSideCell: LLSwipeCell {
         super.awakeFromNib()
         
         let button3 = UIButton()
-        button3.setTitle("3", forState: .Normal)
+        button3.setTitle("3", for: .normal)
         button3.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button3.backgroundColor = UIColor.cyanColor()
+        button3.backgroundColor = .cyan
         let button4 = UIButton()
-        button4.setTitle("4", forState: .Normal)
+        button4.setTitle("4", for: .normal)
         button4.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button4.backgroundColor = UIColor.blueColor()
+        button4.backgroundColor = .blue
         rightButtons = [button3, button4]
     }
 }
@@ -60,13 +60,13 @@ class LockedSwipeCell: LLSwipeCell {
         super.awakeFromNib()
         
         let button3 = UIButton()
-        button3.setTitle("3", forState: .Normal)
+        button3.setTitle("3", for: .normal)
         button3.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button3.backgroundColor = UIColor.cyanColor()
+        button3.backgroundColor = .cyan
         let button4 = UIButton()
-        button4.setTitle("4", forState: .Normal)
+        button4.setTitle("4", for: .normal)
         button4.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button4.backgroundColor = UIColor.blueColor()
+        button4.backgroundColor = .blue
         rightButtons = [button3, button4]
         
         canOpenRightButtons = false
@@ -88,16 +88,16 @@ class InitWithStyleSwipeCell: LLSwipeCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         
         let views = ["label": label]
-        let vertCons = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[label]-0-|", options: [], metrics: nil, views: views)
+        let vertCons = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[label]-0-|", options: [], metrics: nil, views: views)
         slideContentView.addConstraints(vertCons)
-        let horizCons = NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[label]-0-|", options: [], metrics: nil, views: views)
+        let horizCons = NSLayoutConstraint.constraints(withVisualFormat: "H:|-20-[label]-0-|", options: [], metrics: nil, views: views)
         slideContentView.addConstraints(horizCons)
 
         
         let button1 = UIButton()
-        button1.setTitle("1", forState: .Normal)
+        button1.setTitle("1", for: .normal)
         button1.frame = CGRect(x: 0, y: 0, width: 50, height: 10)
-        button1.backgroundColor = UIColor.redColor()
+        button1.backgroundColor = .red
         leftButtons = [button1]
     }
 
@@ -115,16 +115,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerClass(InitWithStyleSwipeCell.self, forCellReuseIdentifier: "InitWithStyleSwipeCell")
+        tableView.register(InitWithStyleSwipeCell.self, forCellReuseIdentifier: "InitWithStyleSwipeCell")
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cells.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let id = String(cells[indexPath.row])
-        let cell = tableView.dequeueReusableCellWithIdentifier(id, forIndexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let id = String(describing: cells[indexPath.row])
+        let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath)
         return cell
     }
 }

@@ -13,31 +13,31 @@ extension UIView {
             return view
         }
         
-        return superview?.parentViewOfClass(type)
+        return superview?.parentViewOfClass(type: type)
     }
 }
 
 internal class OverlayView: UIView {
     weak var targetView: UIView?
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
-        targetView?.touchesBegan(touches, withEvent: event)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        targetView?.touchesBegan(touches, with: event)
     }
-    
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesMoved(touches, withEvent: event)
-        targetView?.touchesCancelled(touches, withEvent: event) // its important to cancel touch to proper unhighlight cell
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        targetView?.touchesCancelled(touches, with: event) // its important to cancel touch to proper unhighlight cell
     }
-    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesEnded(touches, withEvent: event)
-        targetView?.touchesEnded(touches, withEvent: event)
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        targetView?.touchesEnded(touches, with: event)
     }
-    
-    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesCancelled(touches, withEvent: event)
-        targetView?.touchesCancelled(touches, withEvent: event)
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        targetView?.touchesCancelled(touches, with: event)
     }
 }
 
@@ -51,19 +51,19 @@ internal class SlideTableCellScrollView: UIScrollView, UIGestureRecognizerDelega
     }
     
     init() {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         scrollsToTop = false
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
         delaysContentTouches = true
-        directionalLockEnabled = true
+        isDirectionalLockEnabled = true
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return false
     }
 }
@@ -87,9 +87,9 @@ internal class SlideButtonsGroupView: UIView {
     
     init(side: Side) {
         self.side = side
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         
-        widthConstraint = NSLayoutConstraint(item: self, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0)
+        widthConstraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
         addConstraint(widthConstraint)
     }
 
@@ -104,16 +104,16 @@ internal class SlideButtonsGroupView: UIView {
     }
     
     func updateButtonConstraints() {
-        for (index, constraint) in buttonsConstraints.enumerate() {
+        for (index, constraint) in buttonsConstraints.enumerated() {
             let offset = buttonOffsetForIndex(index)
             constraint.constant = offset*CGFloat(progress)
         }
     }
     
-    func buttonOffsetForIndex(index: Int) -> CGFloat {
-        var allButtons = buttons[buttons.startIndex..<buttons.startIndex.advancedBy(index)]
+    func buttonOffsetForIndex(_ index: Int) -> CGFloat {
+        var allButtons = buttons[buttons.startIndex..<(buttons.startIndex + index)]
         if side == .Left {
-            allButtons = buttons[buttons.startIndex.advancedBy(index + 1)..<buttons.endIndex]
+            allButtons = buttons[(buttons.startIndex + index + 1)..<buttons.endIndex]
         }
         
         let offset = allButtons.reduce(0.0) { sum, control in
@@ -139,21 +139,21 @@ internal class SlideButtonsGroupView: UIView {
             if side == .Right {
                 addSubview(button)
             } else {
-                insertSubview(button, atIndex: 0)
+                insertSubview(button, at: 0)
             }
             
             let buttonWidth = button.bounds.size.width
             
-            let buttonWidthConstraint = NSLayoutConstraint(item: button, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: buttonWidth)
+            let buttonWidthConstraint = NSLayoutConstraint(item: button, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: buttonWidth)
             button.addConstraint(buttonWidthConstraint)
             
             let views = ["button": button]
-            let buttonVertConstraint = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[button]-0-|", options: [], metrics: nil, views: views)
+            let buttonVertConstraint = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[button]-0-|", options: [], metrics: nil, views: views)
             addConstraints(buttonVertConstraint)
             
-            let attr: NSLayoutAttribute = side == .Right ? .Leading : .Trailing
+            let attr: NSLayoutAttribute = side == .Right ? .leading : .trailing
             
-            let cons = NSLayoutConstraint(item: button, attribute: attr, relatedBy: .Equal, toItem: self, attribute: attr, multiplier: 1, constant: 0)
+            let cons = NSLayoutConstraint(item: button, attribute: attr, relatedBy: .equal, toItem: self, attribute: attr, multiplier: 1, constant: 0)
             addConstraint(cons)
             buttonsConstraints.append(cons)
         }
@@ -224,12 +224,12 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         
         cellScrollView.addGestureRecognizer(tapGestureRecognizer)
         tapGestureRecognizer.cancelsTouchesInView = false
-        tapGestureRecognizer.addTarget(self, action: #selector(LLSwipeCell.didTapScrollView(_:)))
-        
+        tapGestureRecognizer.addTarget(self, action: #selector(LLSwipeCell.didTapScrollView(rec:)))
+
         let views = ["cellScrollView": cellScrollView]
-        let vertCons = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[cellScrollView]-0-|", options: [], metrics: nil, views: views)
+        let vertCons = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[cellScrollView]-0-|", options: [], metrics: nil, views: views)
         contentView.addConstraints(vertCons)
-        let horizCons = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[cellScrollView]-0-|", options: [], metrics: nil, views: views)
+        let horizCons = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[cellScrollView]-0-|", options: [], metrics: nil, views: views)
         contentView.addConstraints(horizCons)
     }
     
@@ -239,36 +239,36 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         slideContentView.translatesAutoresizingMaskIntoConstraints = false
         
         let views = ["slideContentView": slideContentView]
-        let vertCons = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[slideContentView]-0-|", options: [], metrics: nil, views: views)
+        let vertCons = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[slideContentView]-0-|", options: [], metrics: nil, views: views)
         cellScrollView.addConstraints(vertCons)
         
-        let heightConstraint = NSLayoutConstraint(item: slideContentView, attribute: .Height, relatedBy: .Equal, toItem: cellScrollView, attribute: .Height, multiplier: 1, constant: 0)
+        let heightConstraint = NSLayoutConstraint(item: slideContentView, attribute: .height, relatedBy: .equal, toItem: cellScrollView, attribute: .height, multiplier: 1, constant: 0)
         cellScrollView.addConstraint(heightConstraint)
         
-        let widthConstraint = NSLayoutConstraint(item: slideContentView, attribute: .Width, relatedBy: .Equal, toItem: cellScrollView, attribute: .Width, multiplier: 1, constant: 0)
+        let widthConstraint = NSLayoutConstraint(item: slideContentView, attribute: .width, relatedBy: .equal, toItem: cellScrollView, attribute: .width, multiplier: 1, constant: 0)
         cellScrollView.addConstraint(widthConstraint)
         
         
         let rightPlaceholderView = UIView()
         rightPlaceholderView.translatesAutoresizingMaskIntoConstraints = false
         cellScrollView.addSubview(rightPlaceholderView)
-        rightPlaceholderView.backgroundColor = .clearColor()
-        cellScrollView.addConstraint(NSLayoutConstraint(item: rightPlaceholderView, attribute: .Width, relatedBy: .Equal, toItem: rightButtonsContainerView, attribute: .Width, multiplier: 1, constant: 0))
+        rightPlaceholderView.backgroundColor = .clear
+        cellScrollView.addConstraint(NSLayoutConstraint(item: rightPlaceholderView, attribute: .width, relatedBy: .equal, toItem: rightButtonsContainerView, attribute: .width, multiplier: 1, constant: 0))
         
         
         let leftPlaceholderView = UIView()
         leftPlaceholderView.translatesAutoresizingMaskIntoConstraints = false
-        leftPlaceholderView.backgroundColor = .clearColor()
+        leftPlaceholderView.backgroundColor = .clear
         cellScrollView.addSubview(leftPlaceholderView)
-        cellScrollView.addConstraint(NSLayoutConstraint(item: leftPlaceholderView, attribute: .Width, relatedBy: .Equal, toItem: leftButtonsContainerView, attribute: .Width, multiplier: 1, constant: 0))
+        cellScrollView.addConstraint(NSLayoutConstraint(item: leftPlaceholderView, attribute: .width, relatedBy: .equal, toItem: leftButtonsContainerView, attribute: .width, multiplier: 1, constant: 0))
         
         
         let buttonViews = ["slideContentView": slideContentView,
                            "rightPlaceholderView": rightPlaceholderView,
                            "leftPlaceholderView": leftPlaceholderView]
         
-        
-        let hotizontalCons = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[leftPlaceholderView]-0-[slideContentView]-0-[rightPlaceholderView]-0-|", options: [], metrics: nil, views: buttonViews)
+
+        let hotizontalCons = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[leftPlaceholderView]-0-[slideContentView]-0-[rightPlaceholderView]-0-|", options: [], metrics: nil, views: buttonViews)
         cellScrollView.addConstraints(hotizontalCons)
     }
     
@@ -276,15 +276,15 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
     private func setupOverlayView() {
         let overlay = OverlayView()
         overlay.translatesAutoresizingMaskIntoConstraints = false
-        overlay.backgroundColor = UIColor.clearColor()
+        overlay.backgroundColor = .clear
         overlay.targetView = contentView
-        slideContentView.insertSubview(overlay, atIndex: 0)
+        slideContentView.insertSubview(overlay, at: 0)
         
         let views = ["overlayView": overlay]
-        let vertCons = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[overlayView]-0-|", options: [], metrics: nil, views: views)
+        let vertCons = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[overlayView]-0-|", options: [], metrics: nil, views: views)
         slideContentView.addConstraints(vertCons)
 
-        let hotizontalCons = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[overlayView]-0-|", options: [], metrics: nil, views: views)
+        let hotizontalCons = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[overlayView]-0-|", options: [], metrics: nil, views: views)
         cellScrollView.addConstraints(hotizontalCons)
     }
     
@@ -297,11 +297,11 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
             "slideContentView": slideContentView
         ]
         
-        let vertCons = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[leftButtonsContainerView]-0-|", options: [], metrics: nil, views: views)
+        let vertCons = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[leftButtonsContainerView]-0-|", options: [], metrics: nil, views: views)
         
         cellScrollView.addConstraints(vertCons)
         
-        leftContainerTrailingConstraint = NSLayoutConstraint(item: leftButtonsContainerView, attribute: .Leading, relatedBy: .Equal, toItem: cellScrollView, attribute: .Leading, multiplier: 1, constant: 0)
+        leftContainerTrailingConstraint = NSLayoutConstraint(item: leftButtonsContainerView, attribute: .leading, relatedBy: .equal, toItem: cellScrollView, attribute: .leading, multiplier: 1, constant: 0)
         
         cellScrollView.addConstraint(leftContainerTrailingConstraint)
     }
@@ -315,10 +315,10 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
             "slideContentView": slideContentView
         ]
         
-        let vertCons = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[rightButtonsContainerView]-0-|", options: [], metrics: nil, views: views)
+        let vertCons = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[rightButtonsContainerView]-0-|", options: [], metrics: nil, views: views)
         cellScrollView.addConstraints(vertCons)
         
-        rightContainerTrailingConstraint = NSLayoutConstraint(item: rightButtonsContainerView, attribute: .Trailing, relatedBy: .Equal, toItem: cellScrollView, attribute: .Trailing, multiplier: 1, constant: 0)
+        rightContainerTrailingConstraint = NSLayoutConstraint(item: rightButtonsContainerView, attribute: .trailing, relatedBy: .equal, toItem: cellScrollView, attribute: .trailing, multiplier: 1, constant: 0)
         
         cellScrollView.addConstraint(rightContainerTrailingConstraint)
     }
@@ -336,8 +336,8 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         setupOverlayView()
     }
     
-    public func expandLeftButtons(animated: Bool = true) {
-        cellScrollView.setContentOffset(CGPointZero, animated: animated)
+    public func expandLeftButtons(_ animated: Bool = true) {
+        cellScrollView.setContentOffset(CGPoint.zero, animated: animated)
     }
     
     public func toggleLeftButtons(animated: Bool = true) {
@@ -348,13 +348,13 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         }
     }
     
-    public func expandRightButtons(animated: Bool = true) {
+    public func expandRightButtons(_ animated: Bool = true) {
         let rightOffset = rightButtonsContainerView.bounds.size.width
         let offset = CGPoint(x: startOffset.x + rightOffset, y: 0)
         cellScrollView.setContentOffset(offset, animated: animated)
     }
     
-    public func toggleRightButtons(animated: Bool = true) {
+    public func toggleRightButtons(_ animated: Bool = true) {
         if showsRightButtons {
             hideSwipeOptions(animated)
         } else {
@@ -371,24 +371,23 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         
         hideSwipeOptions(false)
     }
-    
-    
-    override public func willMoveToSuperview(newSuperview: UIView?) {
-        super.willMoveToSuperview(newSuperview)
+
+    public override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
         
-        currentTableView?.panGestureRecognizer.removeTarget(self, action: #selector(LLSwipeCell.didPanTableView(_:)))
+        currentTableView?.panGestureRecognizer.removeTarget(self, action: #selector(LLSwipeCell.didPanTableView(rec:)))
         
-        currentTableView = newSuperview?.parentViewOfClass(UITableView.self)
-        currentTableView?.directionalLockEnabled = true
+        currentTableView = newSuperview?.parentViewOfClass(type: UITableView.self)
+        currentTableView?.isDirectionalLockEnabled = true
         
-        currentTableView?.panGestureRecognizer.addTarget(self, action: #selector(LLSwipeCell.didPanTableView(_:)))
+        currentTableView?.panGestureRecognizer.addTarget(self, action: #selector(LLSwipeCell.didPanTableView(rec:)))
     }
     
     @objc private func didPanTableView(rec: UIPanGestureRecognizer) {
         hideSwipeOptions()
     }
     
-    @objc private func didTapScrollView(rec: UITapGestureRecognizer) {
+    @objc fileprivate func didTapScrollView(rec: UITapGestureRecognizer) {
         hideSwipeOptions()
     }
     
@@ -397,11 +396,12 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         hideSwipeOptions(false)
     }
     
-    public override func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+
+    public override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
-    internal func hideSwipeOptions(animated: Bool = true) {
+    internal func hideSwipeOptions(_ animated: Bool = true) {
         let leftOffset = leftButtonsContainerView.bounds.size.width
         cellScrollView.setContentOffset(CGPoint(x: leftOffset, y: 0), animated: animated)
     }
@@ -410,19 +410,18 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         if (currentOffset.x > leftXOffset + CGFloat(rightTriggerOffset)) {
             return CGPoint(x: leftXOffset + rightXOffset, y: 0)
         } else if (currentOffset.x < CGFloat(leftTriggerOffset)) {
-            return CGPointZero
+            return CGPoint.zero
         }
         
         return CGPoint(x: leftXOffset, y: 0)
     }
     
-    public func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        
-        let offset = targetOffset(scrollView.contentOffset)
-        targetContentOffset.memory = offset
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let offset = targetOffset(currentOffset: scrollView.contentOffset)
+        targetContentOffset.pointee = offset
         
         if abs(velocity.x) > 0.1 {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 scrollView.setContentOffset(offset, animated: true)
             }
         }
@@ -458,19 +457,19 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         rightContainerTrailingConstraint.constant = max(0, leftOffset)
     }
     
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         updateGroupViewProgres()
         upateConstraints()
         
-        if (cellScrollView.dragging && (shouldHideLeftButtons || shouldHideRightButtons)) {
+        if (cellScrollView.isDragging && (shouldHideLeftButtons || shouldHideRightButtons)) {
             hideSwipeOptions(false)
         }
         
         showsRightButtons = (scrollView.contentOffset.x > startOffset.x) && !rightButtons.isEmpty
         showsLeftButtons = (scrollView.contentOffset.x < startOffset.x) && !leftButtons.isEmpty
         
-        tapGestureRecognizer.enabled = showsLeftButtons || showsRightButtons
+        tapGestureRecognizer.isEnabled = showsLeftButtons || showsRightButtons
 
-        tapGestureRecognizer.cancelsTouchesInView = tapGestureRecognizer.enabled
+        tapGestureRecognizer.cancelsTouchesInView = tapGestureRecognizer.isEnabled
     }
 }
