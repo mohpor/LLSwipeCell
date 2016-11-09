@@ -165,7 +165,7 @@ internal class SlideButtonsGroupView: UIView {
 }
 
 
-public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
+open class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
     private let cellScrollView = SlideTableCellScrollView()
     private weak var currentTableView: UITableView?
     
@@ -372,7 +372,7 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         hideSwipeOptions(false)
     }
 
-    public override func willMove(toSuperview newSuperview: UIView?) {
+    open override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         
         currentTableView?.panGestureRecognizer.removeTarget(self, action: #selector(LLSwipeCell.didPanTableView(rec:)))
@@ -391,13 +391,13 @@ public class LLSwipeCell: UITableViewCell, UIScrollViewDelegate {
         hideSwipeOptions()
     }
     
-    override public func prepareForReuse() {
+    override open func prepareForReuse() {
         super.prepareForReuse()
         hideSwipeOptions(false)
     }
     
 
-    public override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    open override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
